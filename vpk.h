@@ -5,14 +5,13 @@
 #include <stdlib.h>
 #include <stdint-gcc.h>
 #include <string.h>
-#include <ctype.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include <stdbool.h>
 #include <sys/types.h>
-#include <errno.h>
-#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#include <assert.h>
+#include <file.h>
 
 #define VPK_HEADER_SIZE (uint32_t)32
 #define VPK_MAX_PATH (uint32_t)256
@@ -51,8 +50,4 @@ typedef struct VPKData {
 vpk_data_t read_vpk(const char* path);
 vpk_data_t parse_file(FILE* fp, vpk_header_t* header);
 void extract_vpk(vpk_file_t* file, const char* extract_path, const char* base_path);
-
-uint8_t* read_str(FILE* fp);
-uint32_t read_u32(FILE* fp);
-uint16_t read_u16(FILE* fp);
 #endif

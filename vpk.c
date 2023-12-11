@@ -1,5 +1,5 @@
 #include <vpk.h>
-#include <assert.h>
+#include <file.h>
 
 /*
  *  Purpose: Reads pak01_dir.vpk file and returns entire files with directories. 
@@ -7,17 +7,23 @@
  */
 vpk_data_t read_vpk(const char *path)
 {
+    // vpk header
+    vpk_header_t header;
+
+    // format vpk directory path
     char dir_path[VPK_MAX_PATH];
     sprintf(dir_path, "%s/pak01_dir.vpk", path);
 
-    vpk_header_t header;
-    
+    // Create file link
     FILE* fp = fopen(dir_path, "r");
 
+    // Panic if file opening failed
     assert(fp && "File could not be open.");
 
+    // Read header
     fread(&header, sizeof(header), 1, fp);
 
+    // Parse vpk file and return it
     return parse_file(fp, &header);
 }
 
@@ -87,62 +93,32 @@ vpk_data_t parse_file(FILE* fp, vpk_header_t* header) {
  *
  */
 void extract_vpk(vpk_file_t* file, const char* extract_path, const char* base_path) {
-
-    assert(file && "file should be pointer");
+    // If directory is null, Just return
+    if(!strcmp(file->directory, "") || !strcmp(file->directory, " ")) return;
+    
+    // VPK Path
     char vpk_path[VPK_MAX_PATH] = {0};
     sprintf(&vpk_path, "%s/pak01_%03d.vpk", base_path, file->archive_index);
 
-    // If directory is null, Just return
-    if(!strcmp(file->directory, "") || !strcmp(file->directory, " ")) return;
-
+    // Extract Path 
     char ext_path[VPK_MAX_PATH] = {0};
     sprintf(&ext_path, "%s/%s/%s", extract_path, &file->directory[0], &file->path[0]);
 
+    // Creating Directory String
     char command[VPK_MAX_PATH] = {0};
     sprintf(&command, "%s/%s", extract_path, &file->directory);
     mkdir(command, 0777);
 
+    // Allocate memory
     void* binary = (void*)malloc(file->lenght);
-    FILE* fp = fopen(vpk_path, "r");
-    if(!fp) {
-        fprintf(stderr, "ERROR: While opening %s\n", vpk_path);
-        return;
-    };
-    fseek(fp, file->cur , SEEK_SET);
-    fread(binary, file->lenght, 1, fp);
-    fclose(fp);
 
-    fp = fopen(ext_path, "w");
-    if(!fp) return;
-    fwrite(binary, file->lenght, 1, fp);
-    fclose(fp);
-
-    free(binary);
-}
-
-
-
-uint8_t* read_str(FILE* fp) {
-    char *str = (void*)calloc(sizeof(char), VPK_MAX_PATH);
-    int i = 0;
-    while(!feof(fp) && i < 256) {
-        char ch = fgetc(fp);
-        if(ch != 0) str[i] = ch;
-        else break;
-        i++;
+    if(!read_file(vpk_path, binary, file->cur, file->lenght)) {
+        fprintf(stderr, "ERROR: While reading from file.\n");
     }
 
-    return str;
-}
+    if(!write_file(ext_path, binary, file->lenght)) {
+        fprintf(stderr, "ERROR: While writing file.\n");
+    }
 
-uint32_t read_u32(FILE* fp) {
-    uint32_t ret = {0};
-    fread(&ret, 4, 1, fp);
-    return ret;
-}
-
-uint16_t read_u16(FILE* fp) {
-    uint16_t ret = {0};
-    fread(&ret, 2, 1, fp);
-    return ret;
+    free(binary);
 }
