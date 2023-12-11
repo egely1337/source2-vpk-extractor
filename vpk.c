@@ -112,10 +112,12 @@ void extract_vpk(vpk_file_t* file, const char* extract_path, const char* base_pa
     // Allocate memory
     void* binary = (void*)malloc(file->lenght);
 
+    // Read file
     if(!read_file(vpk_path, binary, file->cur, file->lenght)) {
         fprintf(stderr, "ERROR: While reading from file.\n");
     }
 
+    // Write file
     if(!write_file(ext_path, binary, file->lenght)) {
         fprintf(stderr, "ERROR: While writing file.\n");
     }

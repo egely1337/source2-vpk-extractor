@@ -1,24 +1,19 @@
+# Source 2 VPK Extractor 🤔
+A small C-written tool designed to extract files from .vpk archives, specifically supporting Source 2. This program efficiently opens VPK files, allowing easy access and extraction of their contents.
+
+```c
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 
 #include <vpk.h>
 
-
-// Temporary config
-const char* game_base_dir = "/mnt/d/SteamLibrary/steamapps/common/Counter-Strike Global Offensive/game/csgo";
-const char* extract_path = "extract";
-
-// Implement
-static void print_help(void) {
-    return;
-} 
+const char* game_base_dir = "source2 game path";
+const char* extract_path = "extract directory";
 
 int main(int argc, char** argv) {
     vpk_data_t vpk_file = read_vpk(game_base_dir);
 
-    // I dont know why for some reason program does not work when using 0 as index.
-    // So don't touch if it works.
     for(int i = 2; i < vpk_file.file_count; i++) {
         fprintf(stdout, 
             "Filename: %s | "
@@ -34,3 +29,4 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+```
