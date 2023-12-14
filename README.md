@@ -1,4 +1,4 @@
-# Source 2 VPK Extractor 🤔
+# Source 2 VPK Extractor 🤔 [based on](https://developer.valvesoftware.com/wiki/VPK)
 A small C-written tool designed to extract files from .vpk archives, specifically supporting Source 2. This program efficiently opens VPK files, allowing easy access and extraction of their contents.
 
 ```c
