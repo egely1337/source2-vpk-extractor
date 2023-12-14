@@ -75,7 +75,6 @@ bool read_file(const char *path, void *ptr, int from, size_t size)
  *  size    = how much bytes will be writed
  * */
 bool write_file(const char* path, void* ptr, size_t size) {
-    
     // Create file link
     FILE* fp = fopen(path, "w");
     
@@ -119,4 +118,23 @@ uint32_t file_size(const char* path, size_t from) {
 
     // Return file
     return i;
+}
+
+/*
+ *  Purpose: Create directory
+ *  Source: https://stackoverflow.com/questions/7430248/creating-a-new-directory-in-c
+ *  directory = directory string that wants to be created
+ */
+void create_directory(const char *directory)
+{
+    char *p = strdup(directory);
+    char *sep = strchr(p+1, '/');
+    while(sep != NULL)
+    {
+        *sep = '\0';
+        mkdir(p, 0755);
+        *sep = '/';
+        sep = strchr(sep+1, '/');
+    }
+    free(p);
 }

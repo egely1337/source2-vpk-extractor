@@ -1,20 +1,40 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include <vpk.h>
 
 
-// Temporary config
-const char* game_base_dir = "/mnt/d/SteamLibrary/steamapps/common/Counter-Strike Global Offensive/game/csgo";
-const char* extract_path = "extract";
-
 // Implement
 static void print_help(void) {
-    return;
+    fprintf(stdout,
+        "VPK Exporter Help:\n" 
+        "--input <game_base_directory>\n"
+        "--extract <extract_path>\n"
+    );
+
+    exit(EXIT_SUCCESS);
 } 
 
 int main(int argc, char** argv) {
+    if(argc < 2) print_help();
+    char game_base_dir[VPK_MAX_PATH], extract_path[VPK_MAX_PATH];
+
+    for(int i = 0; i < argc; i++) {
+        if(!strcmp(argv[i], "--input")) {
+            strncpy(game_base_dir, argv[i+1], VPK_MAX_PATH);
+            i++;
+        }
+
+        if(!strcmp(argv[i], "--export")) {
+            strncpy(extract_path, argv[i+1], VPK_MAX_PATH);
+            i++;
+        }
+    }
+
+    assert((strlen(game_base_dir) > 1 && strlen(extract_path) > 1) && "You should pass variables extract_path and game_base_dir");
+
     vpk_data_t vpk_file = read_vpk(game_base_dir);
 
     // I dont know why for some reason program does not work when using 0 as index.

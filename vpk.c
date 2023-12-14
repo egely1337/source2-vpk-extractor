@@ -105,9 +105,9 @@ void extract_vpk(vpk_file_t* file, const char* extract_path, const char* base_pa
     sprintf(&ext_path, "%s/%s/%s", extract_path, &file->directory[0], &file->path[0]);
 
     // Creating Directory String
-    char command[VPK_MAX_PATH] = {0};
-    sprintf(&command, "%s/%s", extract_path, &file->directory);
-    mkdir(command, 0777);
+    char directory[VPK_MAX_PATH] = {0};
+    sprintf(&directory, "%s/%s/", extract_path, &file->directory[0]);
+    create_directory(directory);
 
     // Allocate memory
     void* binary = (void*)malloc(file->lenght);
@@ -119,7 +119,7 @@ void extract_vpk(vpk_file_t* file, const char* extract_path, const char* base_pa
 
     // Write file
     if(!write_file(ext_path, binary, file->lenght)) {
-        fprintf(stderr, "ERROR: While writing file.\n");
+        fprintf(stderr, "ERROR: While writing file\n");
     }
 
     free(binary);
