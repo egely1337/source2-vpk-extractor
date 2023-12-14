@@ -1,4 +1,4 @@
-#ifndef FILE_IO_
+#ifndef FILE_H_
 #define FILE_H_
 
 #include <stdio.h>
